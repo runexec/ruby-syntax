@@ -32,3 +32,10 @@
 
 (deftest hash-literal
   (is (= "{1 => 2, 3 => 4}" (ruby-syntax {1 2 3 4}))))
+
+(deftest assignment
+  (is (= "(foo.bar = baz)" (ruby-syntax (set! (.bar foo) baz)))))
+
+(deftest private-call
+  (is (= "foo()" (ruby-syntax (foo))))
+  (is (= "foo(1, 2)" (ruby-syntax (foo 1 2)))))

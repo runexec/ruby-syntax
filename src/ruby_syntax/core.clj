@@ -17,10 +17,18 @@
     (apply translate-method-call target method)
     (concat (translate-form target)
             ["." (name method)]
-            (concat ["("]
-                    (join-seq ", "
-                              (map translate-form args))
-                    [")"]))))
+            (when (seq args)
+              (concat ["("]
+                      (join-seq ", "
+                                (map translate-form args))
+                      [")"])))))
+
+(defn translate-private-call [method args]
+  (concat [(name method)]
+          (concat ["("]
+                  (join-seq ", "
+                            (map translate-form args))
+                  [")"])))
 
 (defn translate-infix [op args]
   (concat ["("]
@@ -65,6 +73,7 @@
           new (translate-method-call (first args)
                                      'new
                                      (rest args))
+          set! (translate-infix '= (take 2 args))
           ;else
             (cond
               (INFIX head)
@@ -74,7 +83,7 @@
                        (.endsWith (name head) ".")))
                 (translate-form (macroexpand-1 form))
               :else
-                (syntax-error (str "Unknown head " head)))))
+                (translate-private-call head args))))
     (or (number? form)
         (keyword? form))
       (str form)
