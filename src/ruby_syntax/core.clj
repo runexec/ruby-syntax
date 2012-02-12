@@ -16,7 +16,7 @@
   (if (list? method)
     (apply translate-method-call target method)
     (concat (translate-form target)
-            ["." (str method)]
+            ["." (name method)]
             (concat ["("]
                     (join-seq ", "
                               (map translate-form args))
@@ -70,8 +70,8 @@
               (INFIX head)
                 (translate-infix head args)
               (and (symbol? head)
-                   (or (.startsWith (str head) ".")
-                       (.endsWith (str head) ".")))
+                   (or (.startsWith (name head) ".")
+                       (.endsWith (name head) ".")))
                 (translate-form (macroexpand-1 form))
               :else
                 (syntax-error (str "Unknown head " head)))))
