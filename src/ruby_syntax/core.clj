@@ -111,11 +111,12 @@
           new (translate-method-call (first args)
                                      'new
                                      (rest args))
-          set! (translate-infix '= (take 2 args))
+          set! (apply translate-infix '= args)
           aref (translate-array-ref (first args) (rest args))
           do (translate-do args)
           if (apply translate-if args)
           with-block (apply translate-block-call args)
+          clojure.core/unquote (translate-form (eval (first args)))
           ;else
             (cond
               (INFIX head)
