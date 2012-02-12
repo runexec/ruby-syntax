@@ -39,3 +39,6 @@
 (deftest private-call
   (is (= "foo()" (ruby-syntax (foo))))
   (is (= "foo(1, 2)" (ruby-syntax (foo 1 2)))))
+
+(deftest array-reference
+  (is (= "foo[1, 2]" (ruby-syntax (aref foo 1 2)))))

@@ -57,6 +57,12 @@
                       (name identifier))
                     #"\.")))
 
+(defn translate-array-ref [target args]
+  (concat (translate-form target)
+          ["["]
+          (join-seq ", " (map translate-form args))
+          ["]"]))
+
 (defn translate-form [form]
   (cond
     (map? form)
@@ -74,6 +80,7 @@
                                      'new
                                      (rest args))
           set! (translate-infix '= (take 2 args))
+          aref (translate-array-ref (first args) (rest args))
           ;else
             (cond
               (INFIX head)
