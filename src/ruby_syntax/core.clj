@@ -1,4 +1,5 @@
-(ns ruby-syntax.core)
+(ns ruby-syntax.core
+  (:use [clojure.string :only [split join]]))
 
 (def INFIX (set '(+ - * / % ** & | ^ << >> && || and or
                   == != > < >= <= <=> ===)))
@@ -9,7 +10,7 @@
 (defn syntax-error [message]
   (throw (RuntimeException. message)))
 
-(declare translate-form)
+(declare translate-form translate-forms)
 
 (defn translate-method-call [target method args]
   (if (list? method)
@@ -40,6 +41,14 @@
                               pairs))
           ["}"]))
 
+(defn translate-identifier [identifier]
+  (join "::" (split (if (namespace identifier)
+                      (str (namespace identifier)
+                           "."
+                           (name identifier))
+                      (name identifier))
+                    #"\.")))
+
 (defn translate-form [form]
   (cond
     (map? form)
@@ -67,8 +76,10 @@
               :else
                 (syntax-error (str "Unknown head " head)))))
     (or (number? form)
-        (symbol? form))
+        (keyword? form))
       (str form)
+    (symbol? form)
+      (translate-identifier form)
     :else
       (syntax-error (str "Unexpected form type "
                          (type form)
