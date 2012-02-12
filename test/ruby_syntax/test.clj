@@ -42,3 +42,11 @@
 
 (deftest array-reference
   (is (= "foo[1, 2]" (ruby-syntax (aref foo 1 2)))))
+
+(deftest multiple-statements
+  (is (= "1; 2" (ruby-syntax 1 2)))
+  (is (= "(1; 2)" (ruby-syntax (do 1 2)))))
+
+(deftest if-statement
+  (is (= "(if 1; 2 end)" (ruby-syntax (if 1 2))))
+  (is (= "(if 1; 2 else 3 end)" (ruby-syntax (if 1 2 3)))))

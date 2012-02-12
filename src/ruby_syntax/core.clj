@@ -63,6 +63,27 @@
           (join-seq ", " (map translate-form args))
           ["]"]))
 
+(defn translate-do [forms]
+  (concat ["("]
+          (translate-forms forms)
+          [")"]))
+
+(defn translate-if
+  ([predicate then-clause]
+    (concat ["(if "]
+            (translate-form predicate)
+            ["; "]
+            (translate-form then-clause)
+            [" end)"]))
+  ([predicate then-clause else-clause]
+    (concat ["(if "]
+            (translate-form predicate)
+            ["; "]
+            (translate-form then-clause)
+            [" else "]
+            (translate-form else-clause)
+            [" end)"])))
+
 (defn translate-form [form]
   (cond
     (map? form)
@@ -81,6 +102,8 @@
                                      (rest args))
           set! (translate-infix '= (take 2 args))
           aref (translate-array-ref (first args) (rest args))
+          do (translate-do args)
+          if (apply translate-if (first args) (second args) (drop 2 args))
           ;else
             (cond
               (INFIX head)
@@ -103,7 +126,7 @@
                          form))))
 
 (defn translate-forms [forms]
-  (join-seq ";" (map translate-form forms)))
+  (join-seq "; " (map translate-form forms)))
 
 (defn forms-to-string [forms]
   (apply str (translate-forms forms)))
