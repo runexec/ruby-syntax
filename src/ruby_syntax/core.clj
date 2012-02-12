@@ -11,22 +11,37 @@
 
 (declare translate-form)
 
+(defn translate-list [start delim end args]
+  (concat [start]
+          (join-seq delim (map translate-form args))
+          [end]))
+
 (defn translate-method-call [target method args]
   (if (list? method)
     (apply translate-method-call target method)
     (concat (translate-form target)
-            ["." (str method) "("]
-            (join-seq ", " (map translate-form args))
-            [")"])))
+            ["." (str method)]
+            (translate-list "("
+                            ", "
+                            ")"
+                            args))))
 
 (defn translate-infix [op args]
-  (concat ["("]
-          (join-seq (str " " op " ")
-                    (map translate-form args))
-          [")"]))
+  (translate-list "("
+                  (str " " op " ")
+                  ")"
+                  args))
+
+(defn translate-array-literal [args]
+  (translate-list "["
+                  ", "
+                  "]"
+                  args))
 
 (defn translate-form [form]
   (cond
+    (vector? form)
+      (translate-array-literal form)
     (seq? form)
       (let [head (first form)
             args (rest form)]

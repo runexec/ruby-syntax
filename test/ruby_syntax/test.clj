@@ -19,3 +19,6 @@
 (deftest new-syntax
   (is (= "Foo.new(1, 2)" (ruby-syntax (Foo. 1 2))))
   (is (= "Foo.new(1, 2)" (ruby-syntax (new Foo 1 2)))))
+
+(deftest array-literal
+  (is (= "[1, 2, 3]" (ruby-syntax [1 2 3]))))
