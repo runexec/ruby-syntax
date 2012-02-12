@@ -22,3 +22,6 @@
 
 (deftest array-literal
   (is (= "[1, 2, 3]" (ruby-syntax [1 2 3]))))
+
+(deftest hash-literal
+  (is (= "{1 => 2, 3 => 4}" (ruby-syntax {1 2 3 4}))))
