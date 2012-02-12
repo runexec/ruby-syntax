@@ -84,6 +84,17 @@
             (translate-form else-clause)
             [" end)"])))
 
+(defn translate-arg-spec [args]
+  (join-seq ", " (map str args)))
+
+(defn translate-block-call [call args & body]
+  (concat (translate-form call)
+          [" { |"]
+          (translate-arg-spec args)
+          ["| "]
+          (translate-forms body)
+          [" }"]))
+
 (defn translate-form [form]
   (cond
     (map? form)
@@ -103,7 +114,8 @@
           set! (translate-infix '= (take 2 args))
           aref (translate-array-ref (first args) (rest args))
           do (translate-do args)
-          if (apply translate-if (first args) (second args) (drop 2 args))
+          if (apply translate-if args)
+          with-block (apply translate-block-call args)
           ;else
             (cond
               (INFIX head)

@@ -50,3 +50,8 @@
 (deftest if-statement
   (is (= "(if 1; 2 end)" (ruby-syntax (if 1 2))))
   (is (= "(if 1; 2 else 3 end)" (ruby-syntax (if 1 2 3)))))
+
+(deftest call-with-block
+  (is (= "foo(1, 2) { |a, b| c; d }"
+         (ruby-syntax (with-block (foo 1 2) [a b]
+                        c d)))))
