@@ -128,7 +128,6 @@
           fn (apply translate-lambda args)
           with-block (apply translate-block-call args)
           ruby-syntax.core/block-expr (translate-block-expr (first args))
-          clojure.core/unquote (translate-form (eval (first args)))
           ;else
             (cond
               (INFIX head)
