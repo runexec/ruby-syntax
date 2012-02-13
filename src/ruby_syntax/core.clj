@@ -125,7 +125,7 @@
           aref (translate-array-ref (first args) (rest args))
           do (translate-do args)
           if (apply translate-if args)
-          fn (apply translate-lambda args)
+          fn* (apply translate-lambda (first args))
           with-block (apply translate-block-call args)
           ruby-syntax.core/block-expr (translate-block-expr (first args))
           clojure.core/unquote [`(translate-form ~(first args))]
