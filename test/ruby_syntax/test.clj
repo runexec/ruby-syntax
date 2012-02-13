@@ -61,3 +61,8 @@
 (deftest lambda
   (is (= "lambda { |a, b| c; d }"
          (ruby-syntax (fn [a b] c d)))))
+
+(deftest unquoted
+  (let [expr '(+ 1 2)]
+    (is (= "foo((1 + 2))"
+           (ruby-syntax (foo ~expr))))))

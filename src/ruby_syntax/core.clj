@@ -43,19 +43,19 @@
 
 (defn translate-hash-literal [pairs]
   (concat ["{"]
-          (join-seq ", " (map #(str (translate-form (key %))
-                                    " => "
-                                    (translate-form (val %)))
+          (join-seq ", " (map #(concat (translate-form (key %))
+                                       [" => "]
+                                       (translate-form (val %)))
                               pairs))
           ["}"]))
 
 (defn translate-identifier [identifier]
-  (join "::" (split (if (namespace identifier)
-                      (str (namespace identifier)
-                           "."
-                           (name identifier))
-                      (name identifier))
-                    #"\.")))
+  [(join "::" (split (if (namespace identifier)
+                       (str (namespace identifier)
+                            "."
+                            (name identifier))
+                       (name identifier))
+                     #"\."))])
 
 (defn translate-array-ref [target args]
   (concat (translate-form target)
@@ -85,7 +85,7 @@
             [" end)"])))
 
 (defn translate-arg-spec [args]
-  (join-seq ", " (map str args)))
+  (join-seq ", " (map (comp vector str) args)))
 
 (defn translate-block-call
   ([call expr]
@@ -128,6 +128,7 @@
           fn (apply translate-lambda args)
           with-block (apply translate-block-call args)
           ruby-syntax.core/block-expr (translate-block-expr (first args))
+          clojure.core/unquote [`(translate-form ~(first args))]
           ;else
             (cond
               (INFIX head)
@@ -140,7 +141,7 @@
                 (translate-private-call head args))))
     (or (number? form)
         (keyword? form))
-      (str form)
+      [(str form)]
     (symbol? form)
       (translate-identifier form)
     :else
@@ -151,3 +152,12 @@
 
 (defn translate-forms [forms]
   (join-seq "; " (map translate-form forms)))
+
+(defn coalesce-tokens [tokens]
+  (when-not (empty? tokens)
+    (for [token-group (partition-by string? tokens)]
+      (if (= (count token-group) 1)
+        (first token-group)
+        (if (string? (first token-group))
+          (apply str token-group)
+          `(concat ~@token-group))))))
