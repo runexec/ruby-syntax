@@ -14,7 +14,8 @@
 
 (deftest method-call
   (is (= "foo.bar(1, 2)" (ruby-syntax (.bar foo 1 2))))
-  (is (= "foo.bar(1, 2)" (ruby-syntax (. foo bar 1 2)))))
+  (is (= "foo.bar(1, 2)" (ruby-syntax (. foo bar 1 2))))
+  (is (= "foo.bar(1, 2)" (ruby-syntax (. foo (bar 1 2))))))
 
 (deftest new-syntax
   (is (= "Foo.new(1, 2)" (ruby-syntax (Foo. 1 2))))

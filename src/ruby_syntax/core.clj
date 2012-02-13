@@ -14,7 +14,7 @@
 
 (defn translate-method-call [target method args]
   (if (list? method)
-    (apply translate-method-call target method)
+    (translate-method-call target (first method) (rest method))
     (concat (translate-form target)
             ["." (name method)]
             (when (seq args)
@@ -133,12 +133,11 @@
             (cond
               (INFIX head)
                 (translate-infix head args)
-              (and (symbol? head)
-                   (or (.startsWith (name head) ".")
-                       (.endsWith (name head) ".")))
-                (translate-form (macroexpand-1 form))
               :else
-                (translate-private-call head args))))
+                (let [expanded (macroexpand-1 form)]
+                  (if (identical? expanded form)
+                    (translate-private-call head args)
+                    (translate-form expanded))))))
     (or (number? form)
         (keyword? form))
       [(str form)]
