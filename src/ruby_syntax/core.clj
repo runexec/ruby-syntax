@@ -102,8 +102,11 @@
 (defn translate-block-expr [form]
   (concat ["&"] (translate-form form)))
 
-(defn translate-lambda [args & body]
-  (apply translate-block-call 'lambda args body))
+(defn translate-lambda [defs]
+  (when-not (= (count defs) 1)
+    (throw (RuntimeException. "Multiple arities not supported")))
+  (let [[args & body] (first defs)]
+    (apply translate-block-call 'lambda args body)))
 
 (defn translate-form [form]
   (cond
@@ -125,7 +128,7 @@
           aref (translate-array-ref (first args) (rest args))
           do (translate-do args)
           if (apply translate-if args)
-          fn* (apply translate-lambda (first args))
+          fn* (translate-lambda args)
           with-block (apply translate-block-call args)
           ruby-syntax.core/block-expr (translate-block-expr (first args))
           clojure.core/unquote [`(translate-form ~(first args))]
