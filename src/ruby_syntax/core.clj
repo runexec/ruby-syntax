@@ -102,6 +102,9 @@
 (defn translate-block-expr [form]
   (concat ["&"] (translate-form form)))
 
+(defn translate-lambda [args & body]
+  (apply translate-block-call 'lambda args body))
+
 (defn translate-form [form]
   (cond
     (map? form)
@@ -122,6 +125,7 @@
           aref (translate-array-ref (first args) (rest args))
           do (translate-do args)
           if (apply translate-if args)
+          fn (apply translate-lambda args)
           with-block (apply translate-block-call args)
           ruby-syntax.core/block-expr (translate-block-expr (first args))
           clojure.core/unquote (translate-form (eval (first args)))

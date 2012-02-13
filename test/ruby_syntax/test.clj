@@ -57,3 +57,7 @@
                         c d))))
   (is (= "foo(1, 2, &:bar)"
          (ruby-syntax (with-block (foo 1 2) :bar)))))
+
+(deftest lambda
+  (is (= "lambda { |a, b| c; d }"
+         (ruby-syntax (fn [a b] c d)))))
