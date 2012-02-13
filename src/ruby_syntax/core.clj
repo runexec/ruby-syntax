@@ -151,6 +151,3 @@
 
 (defn translate-forms [forms]
   (join-seq "; " (map translate-form forms)))
-
-(defn forms-to-string [forms]
-  (apply str (translate-forms forms)))

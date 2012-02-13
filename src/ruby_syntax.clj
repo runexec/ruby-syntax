@@ -1,5 +1,5 @@
 (ns ruby-syntax
-  (:require ruby-syntax.core))
+  (:use [ruby-syntax.core :only [translate-forms]]))
 
 (defmacro ruby-syntax [& forms]
-  (ruby-syntax.core/forms-to-string forms))
+  `(str ~@(translate-forms forms)))
