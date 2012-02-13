@@ -54,4 +54,6 @@
 (deftest call-with-block
   (is (= "foo(1, 2) { |a, b| c; d }"
          (ruby-syntax (with-block (foo 1 2) [a b]
-                        c d)))))
+                        c d))))
+  (is (= "foo(1, 2, &:bar)"
+         (ruby-syntax (with-block (foo 1 2) :bar)))))
