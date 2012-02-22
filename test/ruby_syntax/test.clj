@@ -70,4 +70,6 @@
 
 (deftest def-method
   (is (= "def foo(a, b); bar end"
-         (ruby-syntax (def foo [a b] bar)))))
+         (ruby-syntax (def foo [a b] bar))))
+  (is (= "def foo.bar(a, b); baz end")
+         (ruby-syntax (def (.bar foo) [a b] baz))))
