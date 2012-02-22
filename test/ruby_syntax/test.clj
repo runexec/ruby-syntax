@@ -73,3 +73,7 @@
          (ruby-syntax (def foo [a b] bar))))
   (is (= "def foo.bar(a, b); baz end")
          (ruby-syntax (def (.bar foo) [a b] baz))))
+
+(deftest def-module
+  (is (= "module Foo; bar end"
+         (ruby-syntax (module Foo bar)))))

@@ -117,6 +117,13 @@
           (translate-forms body)
           [" end"]))
 
+(defn translate-module [module-name & body]
+  (concat ["module "]
+          (translate-form module-name)
+          ["; "]
+          (translate-forms body)
+          [" end"]))
+
 (defn translate-form [form]
   (cond
     (map? form)
@@ -138,6 +145,7 @@
           do (translate-do args)
           if (apply translate-if args)
           def (apply translate-def args)
+          module (apply translate-module args)
           fn* (translate-lambda args)
           with-block (apply translate-block-call args)
           ruby-syntax.core/block-expr (translate-block-expr (first args))
