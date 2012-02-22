@@ -77,3 +77,11 @@
 (deftest def-module
   (is (= "module Foo; bar end"
          (ruby-syntax (module Foo bar)))))
+
+(deftest def-class
+  (is (= "class Foo; bar end"
+         (ruby-syntax (class Foo bar))))
+  (is (= "class Foo < Bar; baz end"
+         (ruby-syntax (class [Foo Bar] baz))))
+  (is (= "class << foo; bar end")
+         (ruby-syntax (singleton-class foo bar))))

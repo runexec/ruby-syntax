@@ -124,6 +124,24 @@
           (translate-forms body)
           [" end"]))
 
+(defn translate-class [class-name & body]
+  (concat ["class "]
+          (if (vector? class-name)
+            (concat (translate-form (first class-name))
+                    [" < "]
+                    (translate-form (second class-name)))
+            (translate-form class-name))
+          ["; "]
+          (translate-forms body)
+          [" end"]))
+
+(defn translate-singleton-class [expr & body]
+  (concat ["class << "]
+          (translate-form expr)
+          ["; "]
+          (translate-forms body)
+          [" end"]))
+
 (defn translate-form [form]
   (cond
     (map? form)
@@ -146,6 +164,8 @@
           if (apply translate-if args)
           def (apply translate-def args)
           module (apply translate-module args)
+          class (apply translate-class args)
+          singleton-class (apply translate-singleton-class args)
           fn* (translate-lambda args)
           with-block (apply translate-block-call args)
           ruby-syntax.core/block-expr (translate-block-expr (first args))
