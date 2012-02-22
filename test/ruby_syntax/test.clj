@@ -10,12 +10,20 @@
   (doseq [op '(+ - * / % ** & | ^ << >> && || and or
                == != > < >= <= <=> ===)]
     (is (= (str "(1 " op " 2)")
-           (eval (list `ruby-syntax (list op 1 2)))))))
+           (eval (list `ruby-syntax (list op 1 2))))))
+  (is (= "(1 & 2)"
+         (ruby-syntax (bitwise-and 1 2))))
+  (is (= "(1 | 2)"
+         (ruby-syntax (bitwise-or 1 2))))
+  (is (= "(1 ^ 2)"
+         (ruby-syntax (bitwise-xor 1 2)))))
 
 (deftest prefix-operators
   (doseq [op '(! not + -)]
     (is (= (str "(" op " x)")
-           (eval (list `ruby-syntax (list op 'x)))))))
+           (eval (list `ruby-syntax (list op 'x))))))
+  (is (= "(~ x)"
+         (ruby-syntax (bitwise-not x)))))
 
 (deftest method-call
   (is (= "foo.bar(1, 2)" (ruby-syntax (.bar foo 1 2))))

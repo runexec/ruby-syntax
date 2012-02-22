@@ -1,10 +1,16 @@
 (ns ruby-syntax.core
   (:use [clojure.string :only [split join]]))
 
-(def INFIX (set '(+ - * / % ** & | ^ << >> && || and or
-                  == != > < >= <= <=> ===)))
+(def INFIX-ALIASES {'bitwise-and '&
+                    'bitwise-or '|
+                    'bitwise-xor (symbol "^")})
+(def INFIX (set (concat '(+ - * / % ** & | ^ << >> && || and or
+                          == != > < >= <= <=> ===)
+                        (keys INFIX-ALIASES))))
 
-(def PREFIX (set '(+ - ! not)))
+(def PREFIX-ALIASES {'bitwise-not (symbol "~")})
+(def PREFIX (set (concat '(+ - ! not)
+                         (keys PREFIX-ALIASES))))
 
 (defn join-seq [delim seqs]
   (apply concat (interpose [delim] seqs)))
@@ -33,7 +39,7 @@
                   [")"])))
 
 (defn translate-prefix [op arg]
-  (concat [(str "(" op " ")]
+  (concat [(str "(" (get PREFIX-ALIASES op op) " ")]
           (translate-form arg)
           [")"]))
 
@@ -43,7 +49,7 @@
       (translate-prefix op (first args))
     :else
       (concat ["("]
-              (join-seq (str " " op " ")
+              (join-seq (str " " (get INFIX-ALIASES op op) " ")
                         (map translate-form args))
               [")"])))
 
