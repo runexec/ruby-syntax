@@ -10,7 +10,7 @@
   (doseq [op '(+ - * / % ** & | ^ << >> && || and or
                == != > < >= <= <=> ===)]
     (is (= (str "(1 " op " 2)")
-           (eval (list 'ruby-syntax/ruby-syntax (list op 1 2)))))))
+           (eval (list `ruby-syntax (list op 1 2)))))))
 
 (deftest method-call
   (is (= "foo.bar(1, 2)" (ruby-syntax (.bar foo 1 2))))
