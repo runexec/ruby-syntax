@@ -12,6 +12,11 @@
     (is (= (str "(1 " op " 2)")
            (eval (list `ruby-syntax (list op 1 2)))))))
 
+(deftest prefix-operators
+  (doseq [op '(! not + -)]
+    (is (= (str "(" op " x)")
+           (eval (list `ruby-syntax (list op 'x)))))))
+
 (deftest method-call
   (is (= "foo.bar(1, 2)" (ruby-syntax (.bar foo 1 2))))
   (is (= "foo.bar(1, 2)" (ruby-syntax (. foo bar 1 2))))

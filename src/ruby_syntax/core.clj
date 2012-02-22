@@ -4,6 +4,8 @@
 (def INFIX (set '(+ - * / % ** & | ^ << >> && || and or
                   == != > < >= <= <=> ===)))
 
+(def PREFIX (set '(+ - ! not)))
+
 (defn join-seq [delim seqs]
   (apply concat (interpose [delim] seqs)))
 
@@ -30,11 +32,20 @@
                             (map translate-form args))
                   [")"])))
 
-(defn translate-infix [op args]
-  (concat ["("]
-          (join-seq (str " " op " ")
-                    (map translate-form args))
+(defn translate-prefix [op arg]
+  (concat [(str "(" op " ")]
+          (translate-form arg)
           [")"]))
+
+(defn translate-infix [op args]
+  (cond
+    (= (count args) 1)
+      (translate-prefix op (first args))
+    :else
+      (concat ["("]
+              (join-seq (str " " op " ")
+                        (map translate-form args))
+              [")"])))
 
 (defn translate-array-literal [elements]
   (concat ["["]
@@ -174,6 +185,8 @@
             (cond
               (INFIX head)
                 (translate-infix head args)
+              (PREFIX head)
+                (translate-prefix head (first args))
               :else
                 (let [expanded (macroexpand-1 form)]
                   (if (identical? expanded form)
