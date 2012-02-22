@@ -67,3 +67,7 @@
   (let [expr '(+ 1 2)]
     (is (= "foo((1 + 2))"
            (ruby-syntax (foo ~expr))))))
+
+(deftest def-method
+  (is (= "def foo(a, b); bar end"
+         (ruby-syntax (def foo [a b] bar)))))

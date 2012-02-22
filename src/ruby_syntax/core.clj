@@ -108,6 +108,15 @@
   (let [[args & body] (first defs)]
     (apply translate-block-call 'lambda args body)))
 
+(defn translate-def [method args & body]
+  (concat ["def "]
+          (translate-form method)
+          ["("]
+          (translate-arg-spec args)
+          ["); "]
+          (translate-forms body)
+          [" end"]))
+
 (defn translate-form [form]
   (cond
     (map? form)
@@ -128,6 +137,7 @@
           aref (translate-array-ref (first args) (rest args))
           do (translate-do args)
           if (apply translate-if args)
+          def (apply translate-def args)
           fn* (translate-lambda args)
           with-block (apply translate-block-call args)
           ruby-syntax.core/block-expr (translate-block-expr (first args))
