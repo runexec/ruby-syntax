@@ -159,6 +159,15 @@
           (translate-forms body)
           [" end"]))
 
+(defn translate-doto [expr & body]
+  (let [name (gensym "doto__")]
+    (translate-form (apply list
+                      'with-block (list '.tap expr) [name]
+                        (for [form body]
+                          (if (seq? form)
+                            (concat [(first form) name] (rest form))
+                            (list form name)))))))
+
 (defn translate-form [form]
   (cond
     (map? form)
@@ -183,6 +192,7 @@
           module (apply translate-module args)
           class (apply translate-class args)
           singleton-class (apply translate-singleton-class args)
+          doto (apply translate-doto args)
           fn* (translate-lambda args)
           with-block (apply translate-block-call args)
           ruby-syntax.core/block-expr (translate-block-expr (first args))

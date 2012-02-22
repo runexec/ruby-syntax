@@ -98,3 +98,7 @@
          (ruby-syntax (class [Foo Bar] baz))))
   (is (= "class << foo; bar end")
          (ruby-syntax (singleton-class foo bar))))
+
+(deftest doto-tap
+  (is (re-matches #"^\(a \+ b\)\.tap \{ \|doto__\d+\| doto__\d+\.foo\(1, 2\) \}$"
+                  (ruby-syntax (doto (+ a b) (.foo 1 2))))))
