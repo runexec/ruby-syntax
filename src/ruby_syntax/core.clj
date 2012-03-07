@@ -24,8 +24,11 @@
 (defn translate-literal [form]
   (ast/->Literal form))
 
-(defn translate-string [form]
-  (ast/->StringLiteral form))
+(defn translate-string [& forms]
+  (ast/->StringLiteral (for [form forms]
+                         (if (string? form)
+                           (ast/->StringChars form)
+                           (ast/->StringExpr (translate-form form))))))
 
 (defn translate-arg-spec [args]
   (map translate-form args))
@@ -167,6 +170,7 @@
     with-block (apply translate-with-block args)
     ruby-syntax.core/block-expr (translate-block-expr (first args))
     clojure.core/unquote (apply translate-clojure-expr args)
+    str (apply translate-string args)
     ;else
       (cond
         (and (> (count args) 1) (INFIX head))

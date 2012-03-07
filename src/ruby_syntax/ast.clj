@@ -1,4 +1,5 @@
-(ns ruby-syntax.ast)
+(ns ruby-syntax.ast
+  (:use [clojure.string :only [replace-first]]))
 
 (defprotocol Node
   (emit-string-forms [this]))
@@ -55,7 +56,15 @@
 
 (defnode Literal [value] ~[(str value)])
 
-(defnode StringLiteral [value] ~[(quote-ruby-string value)])
+(defnode StringChars [value] ~[(replace-first (pr-str value)
+                                              #"^\"(.*)\"$"
+                                              "$1")])
+
+(defnode StringExpr [expr] ["#{" expr "}"])
+
+(defnode StringLiteral [components] ["\""
+                                     (:seq "" components)
+                                     "\""])
 
 (defnode Identifier [identifier] ~[(name identifier)])
 

@@ -11,6 +11,10 @@
   (is (= "\"foo\\\"bar\"" (ruby-syntax "foo\"bar")))
   (is (= "\"foo\\\\bar\"" (ruby-syntax "foo\\bar"))))
 
+(deftest interpolated-string
+  (is (= "\"#{foo}a\\\"b#{bar}\""
+         (ruby-syntax (str foo "a\"b" bar)))))
+
 (deftest infix-operators
   (doseq [op '(+ - * / % ** & | ^ << >> && || and or
                == != > < >= <= <=> ===)]
