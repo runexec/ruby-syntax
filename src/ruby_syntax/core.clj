@@ -171,6 +171,7 @@
     ruby-syntax.core/block-expr (translate-block-expr (first args))
     clojure.core/unquote (apply translate-clojure-expr args)
     str (apply translate-string args)
+    fn-call (translate-private-call (first args) (rest args))
     ;else
       (cond
         (and (> (count args) 1) (INFIX head))
