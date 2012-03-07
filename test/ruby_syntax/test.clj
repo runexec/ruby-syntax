@@ -20,9 +20,9 @@
 
 (deftest prefix-operators
   (doseq [op '(! not + -)]
-    (is (= (str "(" op " x)")
+    (is (= (str "(" op "x)")
            (eval (list `ruby-syntax (list op 'x))))))
-  (is (= "(~ x)"
+  (is (= "(~x)"
          (ruby-syntax (bitwise-not x)))))
 
 (deftest method-call
@@ -62,8 +62,8 @@
   (is (= "(1; 2)" (ruby-syntax (do 1 2)))))
 
 (deftest if-statement
-  (is (= "(if 1; 2 end)" (ruby-syntax (if 1 2))))
-  (is (= "(if 1; 2 else 3 end)" (ruby-syntax (if 1 2 3)))))
+  (is (= "if 1; 2 end" (ruby-syntax (if 1 2))))
+  (is (= "if 1; 2 else 3 end" (ruby-syntax (if 1 2 3)))))
 
 (deftest call-with-block
   (is (= "foo(1, 2) { |a, b| c; d }"

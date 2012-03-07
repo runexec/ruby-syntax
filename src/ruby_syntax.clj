@@ -1,8 +1,6 @@
 (ns ruby-syntax
-  (:use [ruby-syntax.core :only [translate-forms coalesce-tokens]]))
+  (:use [ruby-syntax.ast :only [serialize-to-form]]
+        [ruby-syntax.core :only [translate-statements]]))
 
 (defmacro ruby-syntax [& forms]
-  `(str ~@(for [token (coalesce-tokens (translate-forms forms))]
-            (if (string? token)
-              token
-              `(apply str ~token)))))
+  (serialize-to-form (translate-statements forms)))
