@@ -48,9 +48,14 @@
              `(concat ~@(map expand-rule rule))
               (expand-rule rule))))))
 
+(defn quote-ruby-string [value]
+  (pr-str value))
+
 (defnode ClojureExpr [expr] ~expr)
 
 (defnode Literal [value] ~[(str value)])
+
+(defnode StringLiteral [value] ~[(quote-ruby-string value)])
 
 (defnode Identifier [identifier] ~[(name identifier)])
 

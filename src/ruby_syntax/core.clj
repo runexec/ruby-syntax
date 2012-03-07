@@ -24,6 +24,9 @@
 (defn translate-literal [form]
   (ast/->Literal form))
 
+(defn translate-string [form]
+  (ast/->StringLiteral form))
+
 (defn translate-arg-spec [args]
   (map translate-form args))
 
@@ -189,6 +192,8 @@
       (translate-literal form)
     (symbol? form)
       (translate-identifier form)
+    (string? form)
+      (translate-string form)
     :else
       (syntax-error (str "Unexpected form type "
                          (type form)

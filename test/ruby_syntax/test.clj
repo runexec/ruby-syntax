@@ -6,6 +6,11 @@
   (is (= "3" (ruby-syntax 3)))
   (is (= "-3" (ruby-syntax -3))))
 
+(deftest literal-string
+  (is (= "\"foo bar\"" (ruby-syntax "foo bar")))
+  (is (= "\"foo\\\"bar\"" (ruby-syntax "foo\"bar")))
+  (is (= "\"foo\\\\bar\"" (ruby-syntax "foo\\bar"))))
+
 (deftest infix-operators
   (doseq [op '(+ - * / % ** & | ^ << >> && || and or
                == != > < >= <= <=> ===)]
